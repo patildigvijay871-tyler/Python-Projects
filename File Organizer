@@ -1,0 +1,60 @@
+import os
+import shutil
+
+# Folder you want to organize
+source_folder = input("Enter the folder path to organize: ").strip()
+
+# File type categories
+file_types = {
+    "Images": [".jpg", ".jpeg", ".png", ".gif", ".bmp"],
+    "Videos": [".mp4", ".mkv", ".avi", ".mov"],
+    "Documents": [".pdf", ".docx", ".doc", ".txt", ".pptx", ".xlsx"],
+    "Music": [".mp3", ".wav", ".aac"],
+    "Archives": [".zip", ".rar", ".7z"],
+    "Programs": [".exe", ".msi", ".apk"]
+}
+
+def organize_files(folder):
+    if not os.path.exists(folder):
+        print("❌ Folder does not exist.")
+        return
+
+    files = os.listdir(folder)
+
+    for file in files:
+        file_path = os.path.join(folder, file)
+
+        # Skip folders
+        if os.path.isdir(file_path):
+            continue
+
+        moved = False
+
+        for category, extensions in file_types.items():
+            if any(file.lower().endswith(ext) for ext in extensions):
+                
+                category_folder = os.path.join(folder, category)
+
+                # Create folder if it doesn't exist
+                if not os.path.exists(category_folder):
+                    os.makedirs(category_folder)
+
+                shutil.move(file_path, os.path.join(category_folder, file))
+                print(f"Moved: {file} → {category}")
+                moved = True
+                break
+
+        # If file type not found
+        if not moved:
+            others_folder = os.path.join(folder, "Others")
+
+            if not os.path.exists(others_folder):
+                os.makedirs(others_folder)
+
+            shutil.move(file_path, os.path.join(others_folder, file))
+            print(f"Moved: {file} → Others")
+
+    print("\n✅ Done organizing!")
+
+# Run
+organize_files(source_folder)

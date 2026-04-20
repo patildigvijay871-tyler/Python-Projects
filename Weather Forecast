@@ -1,0 +1,32 @@
+import requests
+
+# Step 1: Get location using IP
+try:
+    location_data = requests.get("http://ip-api.com/json/").json()
+    city = location_data["city"]
+    print(f"Detected location: {city}")
+except:
+    print("Couldn't detect location.")
+    exit()
+
+# Step 2: Weather API
+api_key = "your_api_key_here"
+
+url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
+
+response = requests.get(url)
+data = response.json()
+
+# Step 3: Display weather
+if data["cod"] == 200:
+    temp = data["main"]["temp"]
+    weather = data["weather"][0]["description"]
+    humidity = data["main"]["humidity"]
+
+    print("\nWeather Details:")
+    print(f"City: {city}")
+    print(f"Temperature: {temp}°C")
+    print(f"Condition: {weather}")
+    print(f"Humidity: {humidity}%")
+else:
+    print("Weather data not found.")

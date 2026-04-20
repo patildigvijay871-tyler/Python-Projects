@@ -1,0 +1,103 @@
+import tkinter as tk
+import random
+
+# Quiz Data
+quiz = [
+    {"question": "Which country recently became the newest member of NATO?",
+     "options": ["Sweden", "Finland", "Ukraine", "Georgia", "Austria"],
+     "answer": "Finland"},
+
+    {"question": "Who is the current Secretary-General of the United Nations?",
+     "options": ["Ban Ki-moon", "António Guterres", "Kofi Annan", "Tedros Adhanom", "Christine Lagarde"],
+     "answer": "António Guterres"},
+
+    {"question": "Which country is the largest producer of crude oil?",
+     "options": ["Russia", "Saudi Arabia", "United States", "Iran", "China"],
+     "answer": "United States"},
+
+    {"question": "What is the capital of Australia?",
+     "options": ["Sydney", "Melbourne", "Canberra", "Perth", "Brisbane"],
+     "answer": "Canberra"},
+
+    {"question": "Which organization provides loans to countries?",
+     "options": ["WTO", "IMF", "WHO", "NATO", "UNESCO"],
+     "answer": "IMF"}
+]
+
+random.shuffle(quiz)
+
+# App setup
+root = tk.Tk()
+root.title("World Affairs Quiz")
+root.geometry("500x400")
+
+score = 0
+q_index = 0
+time_left = 10
+
+# UI Elements
+question_label = tk.Label(root, text="", wraplength=400, font=("Arial", 14))
+question_label.pack(pady=20)
+
+timer_label = tk.Label(root, text="", font=("Arial", 12))
+timer_label.pack()
+
+buttons = []
+
+# Functions
+def load_question():
+    global time_left
+    if q_index < len(quiz):
+        q = quiz[q_index]
+        question_label.config(text=q["question"])
+        
+        options = q["options"].copy()
+        random.shuffle(options)
+
+        for i, option in enumerate(options):
+            buttons[i].config(text=option, state=tk.NORMAL)
+
+        time_left = 10
+        update_timer()
+    else:
+        show_result()
+
+def check_answer(selected):
+    global score, q_index
+    correct = quiz[q_index]["answer"]
+
+    if selected == correct:
+        score += 1
+
+    q_index += 1
+    load_question()
+
+def update_timer():
+    global time_left, q_index
+
+    if time_left > 0:
+        timer_label.config(text=f"Time left: {time_left}s")
+        time_left -= 1
+        root.after(1000, update_timer)
+    else:
+        q_index += 1
+        load_question()
+
+def show_result():
+    question_label.config(text=f"Quiz Over!\nYour Score: {score}/{len(quiz)}")
+    timer_label.config(text="")
+
+    for btn in buttons:
+        btn.pack_forget()
+
+# Buttons
+for i in range(5):
+    btn = tk.Button(root, text="", width=30,
+                    command=lambda i=i: check_answer(buttons[i].cget("text")))
+    btn.pack(pady=5)
+    buttons.append(btn)
+
+# Start quiz
+load_question()
+
+root.mainloop()

@@ -1,0 +1,84 @@
+import random
+import datetime
+
+def greet():
+    print("Hey! I'm your study buddy 🤖")
+    name = input("What's your name? ")
+    print(f"Nice to meet you, {name}!\n")
+    return name
+
+def get_goal():
+    goal = input("What subject do you want to study today? ")
+    hours = float(input("How many hours can you study today? "))
+    return goal, hours
+
+def get_energy():
+    print("\nHow are you feeling today?")
+    print("1. Low 😴")
+    print("2. Medium 🙂")
+    print("3. High 🔥")
+    
+    choice = input("Choose (1/2/3): ")
+    
+    if choice == "1":
+        return "low"
+    elif choice == "2":
+        return "medium"
+    else:
+        return "high"
+
+def generate_plan(subject, hours, energy):
+    print("\nGenerating your personalized study plan...\n")
+    
+    if energy == "low":
+        session_time = 25
+        break_time = 10
+    elif energy == "medium":
+        session_time = 40
+        break_time = 10
+    else:
+        session_time = 60
+        break_time = 15
+
+    total_minutes = int(hours * 60)
+    sessions = total_minutes // (session_time + break_time)
+
+    if sessions == 0:
+        print("Hmm... very little time. Just do one focused session 💪")
+        sessions = 1
+
+    for i in range(1, sessions + 1):
+        print(f"Session {i}: Study {subject} for {session_time} minutes")
+        
+        if i != sessions:
+            tip = random.choice([
+                "Take a short walk 🚶",
+                "Drink water 💧",
+                "Stretch a bit 🧘",
+                "Close your eyes for 2 minutes 😌"
+            ])
+            print(f"Break: {break_time} minutes → {tip}")
+        print()
+
+def motivational_line():
+    quotes = [
+        "Small steps today = Big success tomorrow 🚀",
+        "Consistency beats motivation 💯",
+        "You're closer than you think 🔥",
+        "Don't stop now, you're building something great 💪"
+    ]
+    print(random.choice(quotes))
+
+def main():
+    name = greet()
+    subject, hours = get_goal()
+    energy = get_energy()
+    
+    generate_plan(subject, hours, energy)
+    
+    print("\nFinal message for you:")
+    motivational_line()
+    print(f"\nGood luck, {name}! Go crush it! 😎")
+
+# Run the program
+main()
